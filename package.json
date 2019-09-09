@@ -1,0 +1,11 @@
+{
+  "name": "drop-squat",
+  "version": "1.0.0",
+  "description": "",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nick Mascia <nmmascia@gmail.com>",
+  "license": "MIT"
+}
