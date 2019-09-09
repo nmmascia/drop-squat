@@ -7,5 +7,13 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Nick Mascia <nmmascia@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@slack/events-api": "^2.3.0",
+    "@slack/interactive-messages": "^1.3.0",
+    "node-fetch": "^2.6.0"
+  },
+  "devDependencies": {
+    "prettier": "^1.18.2"
+  }
 }

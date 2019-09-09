@@ -22,10 +22,9 @@ org: nmmascia
 provider:
   name: aws
   runtime: nodejs10.x
-
-package:
-  exclude:
-    - node_modules/**/*
+  environment:
+    VERIFICATION_TOKEN: ${file(env.yml):VERIFICATION_TOKEN}
+    BOT_TOKEN: ${file(env.yml):BOT_TOKEN}
 
 # you can overwrite defaults here
 #  stage: dev
@@ -62,13 +61,13 @@ package:
 
 functions:
   event:
-    handler: handler.event
+    handler: src/events/handler.handler
     events:
       - http:
           path: /event
           method: post
   response:
-    handler: handler.response
+    handler: src/response/handler.handler
     events:
       - http:
           path: /response
