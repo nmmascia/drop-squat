@@ -55,10 +55,10 @@ resources:
       Properties:
         TableName: workouts-table
         AttributeDefinitions:
-          - AttributeName: userId
+          - AttributeName: week
             AttributeType: S
         KeySchema:
-          - AttributeName: userId
+          - AttributeName: week
             KeyType: HASH
         # Set the capacity to auto-scale
         BillingMode: PAY_PER_REQUEST
