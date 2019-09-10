@@ -48,6 +48,9 @@ exports.handler = async (event) => {
       const json = await chatUpdateAPI({ responseUrl, body: { attachments } });
       console.log('[response.handle] status code', json.status);
     }
+    case 'GET_WEEKLY_LEADERBOARD': {
+      console.log('tbd...');
+    }
     default: {
       return {
         statusCode: 400,

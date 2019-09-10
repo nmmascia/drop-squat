@@ -20,6 +20,12 @@ const handleEvent = async ({ type, user, channel }) => {
                 type: 'button',
                 style: 'primary',
               },
+              {
+                name: 'GET_WEEKLY_LEADERBOARD',
+                text: 'Get Weekly Leaderboard',
+                type: 'button',
+                style: 'primary',
+              },
             ],
           },
         ],
