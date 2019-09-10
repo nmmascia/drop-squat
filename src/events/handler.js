@@ -1,25 +1,9 @@
-const fetch = require('node-fetch');
-
-const { VERIFICATION_TOKEN, BOT_TOKEN } = process.env;
-
-function verify({ token, challenge }) {
-  if (token === VERIFICATION_TOKEN) {
-    return {
-      statusCode: 200,
-      body: challenge,
-    };
-  }
-
-  return {
-    statusCode: 400,
-  };
-}
+const chatPostAPI = require('../slack/chat-post');
+const { APP_MENTION, EVENT_CALLBACK, URL_VERIFICATION } = require('../slack/constants/events');
 
 const handleEvent = async ({ type, user, channel }) => {
-  console.log('handling event for type', type);
-
   switch (type) {
-    case 'app_mention': {
+    case APP_MENTION: {
       const text = `Hello, <@${user}>! What would you like to do today?`;
       const message = {
         channel,
@@ -41,20 +25,7 @@ const handleEvent = async ({ type, user, channel }) => {
         ],
       };
 
-      const result = await fetch('https://slack.com/api/chat.postMessage', {
-        method: 'POST',
-        body: JSON.stringify(message),
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${BOT_TOKEN}`,
-        },
-      });
-
-      const json = await result.json();
-
-      console.log('[chat.postMessage] Status:', json);
-
+      const json = await chatPostAPI({ message });
       return {
         statusCode: 200,
       };
@@ -69,16 +40,12 @@ const handleEvent = async ({ type, user, channel }) => {
 
 exports.handler = async (event) => {
   const data = JSON.parse(event.body);
-
   switch (data.type) {
-    case 'url_verification': {
-      return verify(data);
-    }
-    case 'event_callback': {
+    case URL_VERIFICATION:
+      return completeChallenge(data);
+    case EVENT_CALLBACK:
       return handleEvent(data.event);
-    }
-    default: {
+    default:
       return { statusCode: 400 };
-    }
   }
 };

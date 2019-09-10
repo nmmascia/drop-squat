@@ -1,7 +1,7 @@
 const querystring = require('querystring');
-const fetch = require('node-fetch');
 const AWS = require('aws-sdk');
 const { startOfISOWeek, format } = require('date-fns');
+const chatUpdateAPI = require('../slack/chat-update');
 
 const { BOT_TOKEN, WORKOUTS_DB_TABLE } = process.env;
 
@@ -39,26 +39,13 @@ exports.handler = async (event) => {
       const { Attributes } = await dynamoDb.update(params).promise();
       console.log('[dynamodb.update]', Attributes);
 
-      const result = await fetch(responseUrl, {
-        method: 'POST',
-        body: JSON.stringify({
-          replace_original: true,
-          attachments: [
-            {
-              text: `Good work <@${user.id}>! Here's your total workout count this week: ${Attributes[user.id]}`,
-              title: 'Your workout has been tallied!',
-            },
-          ],
-        }),
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${BOT_TOKEN}`,
+      const attachments = [
+        {
+          text: `Good work <@${user.id}>! Here's your total workout count this week: ${Attributes[user.id]}`,
+          title: 'Your workout has been tallied!',
         },
-      });
-
-      const json = await result.json();
-
+      ];
+      const json = await chatUpdateAPI({ responseUrl, body: { attachments } });
       console.log('[response.handle] status code', json.status);
     }
     default: {
