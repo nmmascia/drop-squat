@@ -35,13 +35,24 @@ exports.handler = async (event) => {
         ReturnValues: 'UPDATED_NEW',
       };
       const { Attributes } = await dynamoDb.update(params).promise();
-      const attachments = [
+      const blocks = [
         {
-          text: `Good work <@${user.id}>! Here's your total workout count this week: ${Attributes[userCountKey]}`,
-          title: 'Your workout has been tallied!',
+          type: 'section',
+          text: {
+            type: 'mrkdwn',
+            text: `*Your workout has been tallied!*`,
+          },
+        },
+        {
+          type: 'section',
+          text: {
+            type: 'mrkdwn',
+            text: `Good work <@${user.id}>! You've recorded ${Attributes[userCountKey]} workouts this week!`,
+          },
         },
       ];
-      await chatUpdateAPI({ responseUrl, body: { attachments } });
+      await chatUpdateAPI({ responseUrl, body: { blocks } });
+      break;
     }
     case 'GET_WEEKLY_LEADERBOARD': {
       const { Item } = await dynamoDb
@@ -53,7 +64,7 @@ exports.handler = async (event) => {
         })
         .promise();
 
-      const counts = Object.entries(Item)
+      const sorted = Object.entries(Item)
         .reduce((acc, [key, count]) => {
           const [prefix, userId] = key.split('_');
           if (prefix === 'count') {
@@ -61,22 +72,31 @@ exports.handler = async (event) => {
           }
           return acc;
         }, [])
-        .sort(({ count: a }, { count: b }) => b - a)
-        .map(({ userId, count }, index) => {
-          return {
-            type: 'section',
-            fields: [
-              {
-                type: 'mrkdwn',
-                text: `:first_place_medal: <@${userId}>`,
-              },
-              {
-                type: 'plain_text',
-                text: `${count}`,
-              },
-            ],
-          };
-        });
+        .sort(({ count: a }, { count: b }) => b - a);
+
+      const medalsByCount = {
+        [sorted[0].count]: ':first_place_medal:',
+        // [sorted[1].count]: ':second_place_medal: ',
+        // [sorted[2].count]: ':third_place_medal: ',
+      };
+
+      const sections = sorted.map(({ userId, count }, index, array) => {
+        const emoji = count < 3 ? ':female_zombie: ' : medalsByCount[count];
+
+        return {
+          type: 'section',
+          fields: [
+            {
+              type: 'mrkdwn',
+              text: `${emoji}:trophy: <@${userId}>`,
+            },
+            {
+              type: 'plain_text',
+              text: `${count}`,
+            },
+          ],
+        };
+      });
 
       const blocks = [
         {
@@ -99,16 +119,10 @@ exports.handler = async (event) => {
             },
           ],
         },
-        ...counts,
+        ...sections,
       ];
-
-      console.log('Created blocks', blocks);
-      try {
-        const json = await chatUpdateAPI({ responseUrl, body: { blocks } });
-        console.log('result', json);
-      } catch (err) {
-        console.log('error', err);
-      }
+      const json = await chatUpdateAPI({ responseUrl, body: { blocks } });
+      break;
     }
     default: {
       return {
