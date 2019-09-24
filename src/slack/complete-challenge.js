@@ -1,6 +1,6 @@
 const { VERIFICATION_TOKEN } = process.env;
 
-module.exports = function completeChallenge({ token }) {
+module.exports = function completeChallenge({ token, challenge }) {
   if (token === VERIFICATION_TOKEN) {
     return {
       statusCode: 200,

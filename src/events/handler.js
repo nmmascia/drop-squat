@@ -1,9 +1,11 @@
 const chatPostAPI = require('../slack/chat-post');
 const { APP_MENTION, EVENT_CALLBACK, URL_VERIFICATION } = require('../slack/constants/events');
+const completeChallenge = require('../slack/complete-challenge');
 
 const handleEvent = async ({ type, user, channel }) => {
   switch (type) {
     case APP_MENTION: {
+      console.log('Executing:', APP_MENTION);
       const text = `Hello, <@${user}>! What would you like to do today?`;
       const message = {
         channel,
@@ -46,10 +48,14 @@ const handleEvent = async ({ type, user, channel }) => {
 
 exports.handler = async (event) => {
   const data = JSON.parse(event.body);
+  console.log('Data:', data);
+
   switch (data.type) {
     case URL_VERIFICATION:
+      console.log('Executing:', URL_VERIFICATION);
       return completeChallenge(data);
     case EVENT_CALLBACK:
+      console.log('Executing:', EVENT_CALLBACK);
       return handleEvent(data.event);
     default:
       return { statusCode: 400 };
