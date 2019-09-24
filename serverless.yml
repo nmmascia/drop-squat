@@ -20,7 +20,7 @@ provider:
   environment:
     VERIFICATION_TOKEN: ${file(env.yml):VERIFICATION_TOKEN}
     BOT_TOKEN: ${file(env.yml):BOT_TOKEN}
-    WORKOUTS_DB_TABLE: workouts-table
+    WORKOUTS_DB_TABLE: ${opt:stage}-workouts-table
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -53,7 +53,7 @@ resources:
     WorkoutsTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: workouts-table
+        TableName: ${opt:stage}-workouts-table
         AttributeDefinitions:
           - AttributeName: week
             AttributeType: S
