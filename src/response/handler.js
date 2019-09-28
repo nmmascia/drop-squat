@@ -81,9 +81,9 @@ exports.handler = async (event) => {
 
       const blocks = [
         leaderboard.boardHeader(date),
-        // ...leaderboard.topWorkouts({
-        //   topPeople: [sorted[0], sorted[1], sorted[2]],
-        // }),
+        ...leaderboard.topWorkouts({
+          topPeople: [sorted[0], sorted[1], sorted[2]],
+        }),
         leaderboard.motivationalQuote(),
         leaderboard.countHeader(),
         ...sections,

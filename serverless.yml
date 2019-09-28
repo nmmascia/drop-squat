@@ -20,6 +20,7 @@ provider:
   environment:
     VERIFICATION_TOKEN: ${file(./env/.${opt:stage}-env.yml):VERIFICATION_TOKEN}
     BOT_TOKEN: ${file(./env/.${opt:stage}-env.yml):BOT_TOKEN}
+    CHANNEL_ID: ${file(./env/.${opt:stage}-env.yml):CHANNEL_ID}
     WORKOUTS_DB_TABLE: ${opt:stage}-workouts-table
   iamRoleStatements:
     - Effect: Allow
@@ -48,6 +49,12 @@ functions:
       - http:
           path: /response
           method: post
+  postUpdate:
+    handler: src/post-update/handler.handler
+    events:
+      - schedule:
+        rate: rate(1 minute)
+        enabled: false
 resources:
   Resources:
     WorkoutsTable:
