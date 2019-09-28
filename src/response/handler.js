@@ -2,6 +2,7 @@ const querystring = require('querystring');
 const AWS = require('aws-sdk');
 const { startOfISOWeek, format } = require('date-fns');
 const chatUpdateAPI = require('../slack/chat-update');
+const leaderboard = require('../slack/leaderboard');
 
 const { BOT_TOKEN, WORKOUTS_DB_TABLE } = process.env;
 
@@ -74,51 +75,17 @@ exports.handler = async (event) => {
         }, [])
         .sort(({ count: a }, { count: b }) => b - a);
 
-      const medalsByCount = {
-        [sorted[0].count]: ':first_place_medal:',
-        // [sorted[1].count]: ':second_place_medal: ',
-        // [sorted[2].count]: ':third_place_medal: ',
-      };
-
       const sections = sorted.map(({ userId, count }, index, array) => {
-        const emoji = count < 3 ? ':female_zombie: ' : medalsByCount[count];
-
-        return {
-          type: 'section',
-          fields: [
-            {
-              type: 'mrkdwn',
-              text: `${emoji}:trophy: <@${userId}>`,
-            },
-            {
-              type: 'plain_text',
-              text: `${count}`,
-            },
-          ],
-        };
+        return leaderboard.userCount({ userId, baotw: false, count });
       });
 
       const blocks = [
-        {
-          type: 'section',
-          text: {
-            type: 'mrkdwn',
-            text: `*Leaderboard for ${format(date, 'MMM do, yyyy')}*`,
-          },
-        },
-        {
-          type: 'section',
-          fields: [
-            {
-              type: 'mrkdwn',
-              text: '*Squatter*',
-            },
-            {
-              type: 'mrkdwn',
-              text: '*Workouts*',
-            },
-          ],
-        },
+        leaderboard.boardHeader(date),
+        // ...leaderboard.topWorkouts({
+        //   topPeople: [sorted[0], sorted[1], sorted[2]],
+        // }),
+        leaderboard.motivationalQuote(),
+        leaderboard.countHeader(),
         ...sections,
       ];
       const json = await chatUpdateAPI({ responseUrl, body: { blocks } });

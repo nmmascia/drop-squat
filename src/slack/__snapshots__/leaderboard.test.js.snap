@@ -1,0 +1,91 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should return the correct header sections 1`] = `
+Object {
+  "text": Object {
+    "text": "*Leaderboard for Mar 26th, 1988*",
+    "type": "mrkdwn",
+  },
+  "type": "section",
+}
+`;
+
+exports[`should return the correct section for baotw 1`] = `
+Object {
+  "fields": Array [
+    Object {
+      "text": ":zombie::trophy: <@nick>",
+      "type": "mrkdwn",
+    },
+    Object {
+      "text": "2",
+      "type": "plain_text",
+    },
+  ],
+  "type": "section",
+}
+`;
+
+exports[`should return the correct section for baotw 2`] = `
+Object {
+  "fields": Array [
+    Object {
+      "text": ":trophy: <@nick>",
+      "type": "mrkdwn",
+    },
+    Object {
+      "text": "4",
+      "type": "plain_text",
+    },
+  ],
+  "type": "section",
+}
+`;
+
+exports[`should return the correct section for count above 3 1`] = `
+Object {
+  "fields": Array [
+    Object {
+      "text": "<@nick>",
+      "type": "mrkdwn",
+    },
+    Object {
+      "text": "4",
+      "type": "plain_text",
+    },
+  ],
+  "type": "section",
+}
+`;
+
+exports[`should return the correct section for count under 3 1`] = `
+Object {
+  "fields": Array [
+    Object {
+      "text": ":zombie:<@nick>",
+      "type": "mrkdwn",
+    },
+    Object {
+      "text": "2",
+      "type": "plain_text",
+    },
+  ],
+  "type": "section",
+}
+`;
+
+exports[`should return the correct tally sections 1`] = `
+Object {
+  "fields": Array [
+    Object {
+      "text": "*Squatter*",
+      "type": "mrkdwn",
+    },
+    Object {
+      "text": "*Workouts*",
+      "type": "mrkdwn",
+    },
+  ],
+  "type": "section",
+}
+`;
