@@ -47,15 +47,5 @@ module.exports.handler = async () => {
     blocks,
   };
 
-  console.log('posting', message, CHANNEL_ID);
-  try {
-    const json = await chatPostAPI({ message });
-    console.log('POST RESULT', json);
-  } catch (error) {
-    console.log('ERRORRRR:', error);
-    return {
-      status: 400,
-      error,
-    };
-  }
+  await chatPostAPI({ message });
 };

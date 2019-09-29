@@ -52,7 +52,7 @@ functions:
   postUpdate:
     handler: src/post-update/handler.handler
     events:
-      - schedule: cron(0 10 * * MON *)
+      - schedule: cron(0 10 ? * MON *)
 resources:
   Resources:
     WorkoutsTable:
