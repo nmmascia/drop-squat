@@ -44,13 +44,18 @@ module.exports.handler = async () => {
 
   const message = {
     channel: CHANNEL_ID,
-    as_user: true,
     blocks,
   };
 
   console.log('posting', message, CHANNEL_ID);
-
-  const json = await chatPostAPI({ message });
-
-  console.log('POST RESULT', json);
+  try {
+    const json = await chatPostAPI({ message });
+    console.log('POST RESULT', json);
+  } catch (error) {
+    console.log('ERRORRRR:', error);
+    return {
+      status: 400,
+      error,
+    };
+  }
 };
