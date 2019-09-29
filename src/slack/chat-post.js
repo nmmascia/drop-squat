@@ -12,5 +12,5 @@ module.exports = async function chatPost({ message }) {
     },
   });
 
-  const json = await result.json();
+  await result.json();
 };
