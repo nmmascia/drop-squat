@@ -18,6 +18,7 @@ jobs:
     working_directory: ~/drop-squat
     steps:
       - checkout
+      - run: npm install
       - run: npx serverless deploy --stage prod
 
 workflows:
