@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should return the correct app mention message 1`] = `
+Object {
+  "as_user": true,
+  "attachments": Array [
+    Object {
+      "actions": Array [
+        Object {
+          "name": "TALLY_WORKOUT",
+          "style": "primary",
+          "text": "Tally Workout",
+          "type": "button",
+        },
+        Object {
+          "name": "GET_WEEKLY_LEADERBOARD",
+          "style": "primary",
+          "text": "Get Weekly Leaderboard",
+          "type": "button",
+        },
+      ],
+      "callback_id": "???",
+      "text": "Hello, <@nick>! What would you like to do today?",
+      "title": "Squat Baby Squat",
+    },
+  ],
+  "channel": "MY_CHANNEL",
+}
+`;

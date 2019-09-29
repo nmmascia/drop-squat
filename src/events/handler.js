@@ -1,61 +1,34 @@
 const chatPostAPI = require('../slack/chat-post');
 const { APP_MENTION, EVENT_CALLBACK, URL_VERIFICATION } = require('../slack/constants/events');
 const completeChallenge = require('../slack/complete-challenge');
+const appMention = require('./app-mention');
 
 const handleEvent = async ({ type, user, channel }) => {
+  console.log('Executing inner event:', type);
+
   switch (type) {
     case APP_MENTION: {
-      console.log('Executing:', APP_MENTION);
-      const text = `Hello, <@${user}>! What would you like to do today?`;
-      const message = {
-        channel,
-        as_user: true,
-        attachments: [
-          {
-            text,
-            title: 'Squat Baby Squat',
-            callback_id: '???',
-            actions: [
-              {
-                name: 'TALLY_WORKOUT',
-                text: 'Tally Workout',
-                type: 'button',
-                style: 'primary',
-              },
-              {
-                name: 'GET_WEEKLY_LEADERBOARD',
-                text: 'Get Weekly Leaderboard',
-                type: 'button',
-                style: 'primary',
-              },
-            ],
-          },
-        ],
-      };
-
+      const message = appMention.getMessage({ channel, user });
       const json = await chatPostAPI({ message });
-      return {
-        statusCode: 200,
-      };
+      console.log('Response:', json);
+      return { statusCode: 200 };
     }
     default: {
-      return {
-        statusCode: 400,
-      };
+      return { statusCode: 400 };
     }
   }
 };
 
 exports.handler = async (event) => {
   const data = JSON.parse(event.body);
-  console.log('Data:', data);
+  const { type } = data;
+  console.log('Executing Slack event:', type);
+  console.log('Input data:', data);
 
   switch (data.type) {
     case URL_VERIFICATION:
-      console.log('Executing:', URL_VERIFICATION);
       return completeChallenge(data);
     case EVENT_CALLBACK:
-      console.log('Executing:', EVENT_CALLBACK);
       return handleEvent(data.event);
     default:
       return { statusCode: 400 };
