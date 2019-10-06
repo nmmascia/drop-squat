@@ -19,6 +19,11 @@ const handleEvent = async ({ type, user, channel }) => {
   }
 };
 
+const handleAutoIncrement = async ({ type, user, channel }) => {
+  console.log('AUTO INCREMENT');
+  return { statusCode: 200 };
+};
+
 exports.handler = async (event) => {
   const data = JSON.parse(event.body);
   const { type } = data;
@@ -30,7 +35,7 @@ exports.handler = async (event) => {
     case URL_VERIFICATION:
       return completeChallenge(data);
     case EVENT_CALLBACK:
-      return handleEvent(data.event);
+      return data.upload ? handleAutoIncrement(data.event) : handleEvent(data.event);
     default:
       return { statusCode: 400 };
   }
