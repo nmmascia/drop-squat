@@ -24,6 +24,7 @@ exports.handler = async (event) => {
   const { type } = data;
   console.log('Executing Slack event:', type);
   console.log('Input data:', data);
+  console.log('Inner event:', data.event);
 
   switch (data.type) {
     case URL_VERIFICATION:
