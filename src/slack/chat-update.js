@@ -15,5 +15,6 @@ module.exports = async function chatUpdate({ responseUrl, body }) {
     },
   });
 
-  await result.json();
+  const json = await result.json();
+  return json;
 };
