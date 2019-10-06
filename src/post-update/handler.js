@@ -1,13 +1,13 @@
 const leaderboard = require('../slack/leaderboard');
 const chatPostAPI = require('../slack/chat-post');
 const AWS = require('aws-sdk');
-const { startOfISOWeek, format } = require('date-fns');
+const { startOfISOWeek, format, subWeeks } = require('date-fns');
 
 const { WORKOUTS_DB_TABLE, CHANNEL_ID } = process.env;
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 module.exports.handler = async () => {
-  const date = startOfISOWeek(new Date());
+  const date = startOfISOWeek(subWeeks(new Date(), 1));
   const storageKey = format(date, 'MMddyyyy');
 
   const { Item } = await dynamoDb
