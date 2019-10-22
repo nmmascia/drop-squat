@@ -71,6 +71,7 @@ const handleEvent = async ({ type, user, channel, upload }) => {
 };
 
 exports.handler = async (event) => {
+  console.log('incoming event', event);
   const data = JSON.parse(event.body);
   const { type } = data;
   console.log('Executing Slack event:', type);

@@ -49,10 +49,23 @@ functions:
       - http:
           path: /response
           method: post
+  record:
+    handler: src/record/handler.handler
+    events:
+      - http:
+          path: /record
+          method: get
+          request:
+            template:
+              application/json: >
+                {
+                  "week": "$input.params(''week'')"
+                }
   postUpdate:
     handler: src/post-update/handler.handler
     events:
       - schedule: cron(0 10 ? * MON *)
+
 resources:
   Resources:
     WorkoutsTable:
