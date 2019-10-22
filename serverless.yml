@@ -65,7 +65,6 @@ functions:
     handler: src/post-update/handler.handler
     events:
       - schedule: cron(0 10 ? * MON *)
-
 resources:
   Resources:
     WorkoutsTable:
@@ -77,6 +76,18 @@ resources:
             AttributeType: S
         KeySchema:
           - AttributeName: week
+            KeyType: HASH
+        # Set the capacity to auto-scale
+        BillingMode: PAY_PER_REQUEST
+    UsersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${opt:stage}-users-table
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
             KeyType: HASH
         # Set the capacity to auto-scale
         BillingMode: PAY_PER_REQUEST
