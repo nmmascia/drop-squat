@@ -4,6 +4,7 @@ const completeChallenge = require('../slack/complete-challenge');
 const appMention = require('./app-mention');
 const AWS = require('aws-sdk');
 const { startOfISOWeek, format } = require('date-fns');
+const { utcToZonedTime } = require('date-fns-tz');
 
 const { BOT_TOKEN, WORKOUTS_DB_TABLE } = process.env;
 
@@ -14,7 +15,8 @@ const handleEvent = async ({ type, user, channel, upload }) => {
   console.log('upload value', upload);
 
   if (upload) {
-    const date = startOfISOWeek(new Date());
+    const inputDate = utcToZonedTime(new Date(), 'America/Los_Angeles');
+    const date = startOfISOWeek(inputDate);
     const storageKey = format(date, 'MMddyyyy');
     const userCountKey = `count_${user}`;
 
