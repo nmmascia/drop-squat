@@ -1,8 +1,9 @@
 const querystring = require('querystring');
 const AWS = require('aws-sdk');
-const { startOfISOWeek, format, utcToZonedTime } = require('date-fns');
+const { startOfISOWeek, format } = require('date-fns');
 const chatUpdateAPI = require('../slack/chat-update');
 const leaderboard = require('../slack/leaderboard');
+const { utcToZonedTime } = require('date-fns-tz');
 
 const { WORKOUTS_DB_TABLE } = process.env;
 
