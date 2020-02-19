@@ -4,7 +4,7 @@ const { startOfISOWeek, format } = require('date-fns');
 const chatUpdateAPI = require('../slack/chat-update');
 const leaderboard = require('../slack/leaderboard');
 
-const { BOT_TOKEN, WORKOUTS_DB_TABLE } = process.env;
+const { WORKOUTS_DB_TABLE } = process.env;
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
@@ -14,7 +14,8 @@ exports.handler = async (event) => {
   const [action] = data.actions;
   const responseUrl = data.response_url.replace('\\\\', '');
   const { user } = data;
-  const date = startOfISOWeek(new Date());
+  const inputDate = utcToZonedTime(new Date(), 'America/Los_Angeles');
+  const date = startOfISOWeek(inputDate);
   const storageKey = format(date, 'MMddyyyy');
   const userCountKey = `count_${user.id}`;
   console.log('EVENT', action.name, storageKey, user.id);
