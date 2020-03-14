@@ -19,7 +19,7 @@ jobs:
     steps:
       - checkout
       - run: npm install
-      - run: npx serverless deploy --stage prod
+      - run: npm deploy
 
 workflows:
   version: 2
