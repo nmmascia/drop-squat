@@ -6,15 +6,15 @@ const AWS = require('aws-sdk');
 const { startOfISOWeek, format } = require('date-fns');
 const { utcToZonedTime } = require('date-fns-tz');
 
-const { BOT_TOKEN, WORKOUTS_DB_TABLE } = process.env;
+const {  WORKOUTS_DB_TABLE } = process.env;
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
-const handleEvent = async ({ type, user, channel, upload }) => {
+const handleEvent = async ({ type, user, channel, upload, files }) => {
   console.log('Executing inner event:', type);
-  console.log('upload value', upload);
+  console.log('upload value', upload, files);
 
-  if (upload) {
+  if (upload || Boolean(files && files.length)) {
     const inputDate = utcToZonedTime(new Date(), 'America/Los_Angeles');
     const date = startOfISOWeek(inputDate);
     const storageKey = format(date, 'MMddyyyy');
