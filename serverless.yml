@@ -14,7 +14,6 @@
 service: drop-squat
 app: drop-squat
 org: nmmascia
-frameworkVersion: '2'
 provider:
   name: aws
   runtime: nodejs16.x
