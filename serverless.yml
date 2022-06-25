@@ -16,7 +16,7 @@ app: drop-squat
 org: nmmascia
 provider:
   name: aws
-  runtime: nodejs10.x
+  runtime: nodejs16.x
   environment:
     VERIFICATION_TOKEN: ${env:VERIFICATION_TOKEN}
     BOT_TOKEN: ${env:BOT_TOKEN}
