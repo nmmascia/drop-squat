@@ -2,26 +2,11 @@
   "name": "drop-squat",
   "version": "1.0.0",
   "description": "",
-  "main": "handler.js",
-  "scripts": {
-    "test": "jest -c jest.config.js",
-    "deploy": "npx serverless deploy --stage prod"
-  },
+  "private": true,
   "author": "Nick Mascia <nmmascia@gmail.com>",
   "license": "MIT",
-  "dependencies": {
-    "@slack/events-api": "^2.3.0",
-    "@slack/interactive-messages": "^1.3.0",
-    "@slack/web-api": "^5.2.0",
-    "aws-sdk": "^2.814.0",
-    "date-fns": "^2.1.0",
-    "date-fns-tz": "^1.0.8",
-    "node-fetch": "^2.6.7"
-  },
-  "devDependencies": {
-    "jest": "^30.2.0",
-    "jest-cli": "^30.2.0",
-    "jest-fetch-mock": "^2.1.2",
-    "prettier": "^1.18.2"
+  "scripts": {
+    "test": "pnpm --filter @drop-squat/slackbot test",
+    "deploy": "pnpm --filter @drop-squat/slackbot deploy"
   }
 }
