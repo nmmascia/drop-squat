@@ -8,3 +8,7 @@ jspm_packages
 *env.yml
 coverage
 scripts/deploy-dev.sh
+
+# Local development
+.env
+.dynamodb

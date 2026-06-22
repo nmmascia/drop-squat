@@ -5,7 +5,11 @@
   "main": "handler.js",
   "scripts": {
     "test": "jest -c jest.config.js",
-    "deploy": "npx serverless deploy --stage prod"
+    "deploy": "npx serverless deploy --stage prod",
+    "db:start": "docker compose up -d",
+    "db:stop": "docker compose down",
+    "db:create-tables": "node scripts/create-tables.js",
+    "dev": "node local-server.js"
   },
   "author": "Nick Mascia <nmmascia@gmail.com>",
   "license": "MIT",
@@ -19,6 +23,8 @@
     "node-fetch": "^2.6.7"
   },
   "devDependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
     "jest": "^27.4.5",
     "jest-cli": "^27.4.5",
     "jest-fetch-mock": "^2.1.2",
