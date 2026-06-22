@@ -1,12 +1,14 @@
+import type { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, GetCommand } from '@aws-sdk/lib-dynamodb';
-import { startOfISOWeek, format, subWeeks } from 'date-fns';
 
 const { WORKOUTS_DB_TABLE } = process.env;
 const dynamoDb = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 
-export const handler = async (event) => {
-  const { week } = event.queryStringParameters;
+export const handler = async (
+  event: APIGatewayProxyEventV2
+): Promise<APIGatewayProxyResultV2> => {
+  const { week } = event.queryStringParameters ?? {};
 
   const { Item } = await dynamoDb.send(
     new GetCommand({
@@ -19,8 +21,8 @@ export const handler = async (event) => {
 
   const headers = ['handle', 'workouts'];
 
-  const rows = Object.entries(Item)
-    .reduce((acc, [key, count]) => {
+  const rows = Object.entries(Item ?? {})
+    .reduce((acc: [string, number][], [key, count]) => {
       const [prefix, userId] = key.split('_');
       if (prefix === 'count') {
         acc.push([userId, count]);

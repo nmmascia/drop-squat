@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 
-export const boardHeader = (date) => ({
+export const boardHeader = (date: Date) => ({
   type: 'section',
   text: {
     type: 'mrkdwn',
@@ -22,7 +22,15 @@ export const countHeader = () => ({
   ],
 });
 
-export const userCount = ({ userId, baotw, count }) => {
+export const userCount = ({
+  userId,
+  baotw,
+  count,
+}: {
+  userId: string;
+  baotw?: boolean;
+  count: number;
+}) => {
   const slackUserRef = `<@${userId}>`;
   let emojis = '';
   if (count < 3) emojis += ':zombie:';
@@ -44,7 +52,7 @@ export const userCount = ({ userId, baotw, count }) => {
   };
 };
 
-export const topWorkouts = ({ topPeople }) => {
+export const topWorkouts = ({ topPeople }: { topPeople: { userId: string }[] }) => {
   return [
     {
       type: 'section',

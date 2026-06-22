@@ -2,7 +2,12 @@
 // `resources.Resources` section in serverless.yml. Safe to run repeatedly;
 // tables that already exist are skipped.
 import 'dotenv/config';
-import { DynamoDBClient, ListTablesCommand, CreateTableCommand } from '@aws-sdk/client-dynamodb';
+import {
+  DynamoDBClient,
+  ListTablesCommand,
+  CreateTableCommand,
+  type CreateTableCommandInput,
+} from '@aws-sdk/client-dynamodb';
 
 const endpoint = process.env.DYNAMODB_ENDPOINT || 'http://localhost:8000';
 const region = process.env.AWS_REGION || 'localhost';
@@ -18,7 +23,7 @@ const dynamodb = new DynamoDBClient({
 
 const stage = process.env.STAGE || 'dev';
 
-const tables = [
+const tables: CreateTableCommandInput[] = [
   {
     TableName: process.env.WORKOUTS_DB_TABLE || `${stage}-workouts-table`,
     AttributeDefinitions: [{ AttributeName: 'week', AttributeType: 'S' }],
@@ -37,7 +42,7 @@ try {
   const { TableNames } = await dynamodb.send(new ListTablesCommand({}));
 
   for (const table of tables) {
-    if (TableNames.includes(table.TableName)) {
+    if ((TableNames ?? []).includes(table.TableName!)) {
       console.log(`✓ ${table.TableName} already exists`);
       continue;
     }
@@ -47,7 +52,7 @@ try {
 
   console.log(`\nDynamoDB Local ready at ${endpoint}`);
 } catch (err) {
-  console.error('Failed to create tables:', err.message);
+  console.error('Failed to create tables:', (err as Error).message);
   console.error('Is DynamoDB Local running? Try: pnpm run db:start');
   process.exit(1);
 }

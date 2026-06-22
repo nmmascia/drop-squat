@@ -1,4 +1,4 @@
-export const getMessage = ({ user, channel }) => {
+export const getMessage = ({ user, channel }: { user: string; channel: string }) => {
   const text = `Hello, <@${user}>! What would you like to do today?`;
   return {
     channel,

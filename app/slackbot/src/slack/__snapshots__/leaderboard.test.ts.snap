@@ -1,8 +1,8 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`should return the correct header sections 1`] = `
-Object {
-  "text": Object {
+{
+  "text": {
     "text": "*Leaderboard for Mar 26th, 1988*",
     "type": "mrkdwn",
   },
@@ -11,13 +11,13 @@ Object {
 `;
 
 exports[`should return the correct section for baotw 1`] = `
-Object {
-  "fields": Array [
-    Object {
+{
+  "fields": [
+    {
       "text": ":zombie::trophy: <@nick>",
       "type": "mrkdwn",
     },
-    Object {
+    {
       "text": "2",
       "type": "plain_text",
     },
@@ -27,13 +27,13 @@ Object {
 `;
 
 exports[`should return the correct section for baotw 2`] = `
-Object {
-  "fields": Array [
-    Object {
+{
+  "fields": [
+    {
       "text": ":trophy: <@nick>",
       "type": "mrkdwn",
     },
-    Object {
+    {
       "text": "4",
       "type": "plain_text",
     },
@@ -43,13 +43,13 @@ Object {
 `;
 
 exports[`should return the correct section for count above 3 1`] = `
-Object {
-  "fields": Array [
-    Object {
+{
+  "fields": [
+    {
       "text": "<@nick>",
       "type": "mrkdwn",
     },
-    Object {
+    {
       "text": "4",
       "type": "plain_text",
     },
@@ -59,13 +59,13 @@ Object {
 `;
 
 exports[`should return the correct section for count under 3 1`] = `
-Object {
-  "fields": Array [
-    Object {
+{
+  "fields": [
+    {
       "text": ":zombie:<@nick>",
       "type": "mrkdwn",
     },
-    Object {
+    {
       "text": "2",
       "type": "plain_text",
     },
@@ -75,13 +75,13 @@ Object {
 `;
 
 exports[`should return the correct tally sections 1`] = `
-Object {
-  "fields": Array [
-    Object {
+{
+  "fields": [
+    {
       "text": "*Squatter*",
       "type": "mrkdwn",
     },
-    Object {
+    {
       "text": "*Workouts*",
       "type": "mrkdwn",
     },

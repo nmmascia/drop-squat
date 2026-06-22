@@ -1,18 +1,18 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`should return the correct app mention message 1`] = `
-Object {
+{
   "as_user": true,
-  "attachments": Array [
-    Object {
-      "actions": Array [
-        Object {
+  "attachments": [
+    {
+      "actions": [
+        {
           "name": "TALLY_WORKOUT",
           "style": "primary",
           "text": "Tally Workout",
           "type": "button",
         },
-        Object {
+        {
           "name": "GET_WEEKLY_LEADERBOARD",
           "style": "primary",
           "text": "Get Weekly Leaderboard",

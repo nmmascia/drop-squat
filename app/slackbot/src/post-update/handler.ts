@@ -7,7 +7,7 @@ import chatPostAPI from '../slack/chat-post.js';
 const { WORKOUTS_DB_TABLE, CHANNEL_ID } = process.env;
 const dynamoDb = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 
-export const handler = async () => {
+export const handler = async (): Promise<void> => {
   const date = startOfISOWeek(subWeeks(new Date(), 1));
   const storageKey = format(date, 'MMddyyyy');
 
@@ -20,8 +20,8 @@ export const handler = async () => {
     })
   );
 
-  const sorted = Object.entries(Item)
-    .reduce((acc, [key, count]) => {
+  const sorted = Object.entries(Item ?? {})
+    .reduce((acc: { userId: string; count: number }[], [key, count]) => {
       const [prefix, userId] = key.split('_');
       if (prefix === 'count') {
         acc.push({ userId, count });

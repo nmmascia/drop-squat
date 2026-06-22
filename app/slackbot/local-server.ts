@@ -5,7 +5,7 @@
 //
 // Routes mirror the `functions` block in serverless.yml.
 import 'dotenv/config';
-import express from 'express';
+import express, { type Request, type Response } from 'express';
 
 // Point the AWS SDK at DynamoDB Local BEFORE the handlers are imported. The
 // handlers build their (zero-config) DynamoDB client at module load, and AWS
@@ -31,7 +31,12 @@ app.use(express.text({ type: '*/*' }));
 
 // Wraps a Lambda handler as an Express route: builds an API Gateway proxy-style
 // event, then applies the handler's { statusCode, headers, body } response.
-const lambda = (handler) => async (req, res) => {
+// Glue between Express and the Lambda handlers, which expect an API Gateway
+// proxy event. The shapes don't line up structurally, so the handler is typed
+// permissively here — this shim only forwards { statusCode, headers, body }.
+type LambdaHandler = (event: any) => Promise<any>;
+
+const lambda = (handler: LambdaHandler) => async (req: Request, res: Response) => {
   const event = {
     body: typeof req.body === 'string' ? req.body : '',
     headers: req.headers,
@@ -46,7 +51,7 @@ const lambda = (handler) => async (req, res) => {
     res.status(result.statusCode || 200).send(result.body);
   } catch (err) {
     console.error(`Handler error on ${req.method} ${req.path}:`, err);
-    res.status(500).send(err.message);
+    res.status(500).send((err as Error).message);
   }
 };
 
@@ -62,7 +67,7 @@ app.post('/post-update', async (req, res) => {
     res.status(200).send('post-update ran');
   } catch (err) {
     console.error('post-update error:', err);
-    res.status(500).send(err.message);
+    res.status(500).send((err as Error).message);
   }
 });
 

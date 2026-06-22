@@ -1,6 +1,6 @@
 const { BOT_TOKEN } = process.env;
 
-export default async function chatPost({ message }) {
+export default async function chatPost({ message }: { message: unknown }) {
   const result = await fetch('https://slack.com/api/chat.postMessage', {
     method: 'POST',
     body: JSON.stringify(message),

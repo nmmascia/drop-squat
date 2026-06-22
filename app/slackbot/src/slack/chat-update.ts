@@ -1,6 +1,12 @@
 const { BOT_TOKEN } = process.env;
 
-export default async function chatUpdate({ responseUrl, body }) {
+export default async function chatUpdate({
+  responseUrl,
+  body,
+}: {
+  responseUrl: string;
+  body: Record<string, unknown>;
+}) {
   const result = await fetch(responseUrl, {
     method: 'POST',
     body: JSON.stringify({

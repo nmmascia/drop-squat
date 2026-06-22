@@ -1,24 +1,30 @@
 import querystring from 'node:querystring';
+import type { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocumentClient, GetCommand, UpdateCommand } from '@aws-sdk/lib-dynamodb';
+import {
+  DynamoDBDocumentClient,
+  GetCommand,
+  UpdateCommand,
+  type UpdateCommandInput,
+} from '@aws-sdk/lib-dynamodb';
 import { startOfISOWeek, format } from 'date-fns';
-import dateFnsTz from 'date-fns-tz';
+import { toZonedTime } from 'date-fns-tz';
 import chatUpdateAPI from '../slack/chat-update.js';
 import * as leaderboard from '../slack/leaderboard.js';
-
-const { utcToZonedTime } = dateFnsTz;
 
 const { WORKOUTS_DB_TABLE } = process.env;
 
 const dynamoDb = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 
-export const handler = async (event) => {
-  const { payload } = querystring.parse(event.body);
-  const data = JSON.parse(payload);
+export const handler = async (
+  event: APIGatewayProxyEventV2
+): Promise<APIGatewayProxyResultV2> => {
+  const { payload } = querystring.parse(event.body ?? '');
+  const data = JSON.parse(payload as string);
   const [action] = data.actions;
   const responseUrl = data.response_url.replace('\\\\', '');
   const { user } = data;
-  const inputDate = utcToZonedTime(new Date(), 'America/Los_Angeles');
+  const inputDate = toZonedTime(new Date(), 'America/Los_Angeles');
   const date = startOfISOWeek(inputDate);
   const storageKey = format(date, 'MMddyyyy');
   const userCountKey = `count_${user.id}`;
@@ -26,7 +32,7 @@ export const handler = async (event) => {
 
   switch (action.name) {
     case 'TALLY_WORKOUT': {
-      const params = {
+      const params: UpdateCommandInput = {
         TableName: WORKOUTS_DB_TABLE,
         Key: {
           week: storageKey,
@@ -53,7 +59,7 @@ export const handler = async (event) => {
           type: 'section',
           text: {
             type: 'mrkdwn',
-            text: `Good work <@${user.id}>! You've recorded ${Attributes[userCountKey]} workouts this week!`,
+            text: `Good work <@${user.id}>! You've recorded ${Attributes?.[userCountKey]} workouts this week!`,
           },
         },
       ];
@@ -70,8 +76,8 @@ export const handler = async (event) => {
         })
       );
 
-      const sorted = Object.entries(Item)
-        .reduce((acc, [key, count]) => {
+      const sorted = Object.entries(Item ?? {})
+        .reduce((acc: { userId: string; count: number }[], [key, count]) => {
           const [prefix, userId] = key.split('_');
           if (prefix === 'count') {
             acc.push({ userId, count });
