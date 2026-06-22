@@ -1,14 +1,17 @@
-const chatPostAPI = require('../slack/chat-post');
-const { APP_MENTION, EVENT_CALLBACK, URL_VERIFICATION } = require('../slack/constants/events');
-const completeChallenge = require('../slack/complete-challenge');
-const appMention = require('./app-mention');
-const AWS = require('aws-sdk');
-const { startOfISOWeek, format } = require('date-fns');
-const { utcToZonedTime } = require('date-fns-tz');
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import { DynamoDBDocumentClient, UpdateCommand } from '@aws-sdk/lib-dynamodb';
+import { startOfISOWeek, format } from 'date-fns';
+import dateFnsTz from 'date-fns-tz';
+import chatPostAPI from '../slack/chat-post.js';
+import { APP_MENTION, EVENT_CALLBACK, URL_VERIFICATION } from '../slack/constants/events.js';
+import completeChallenge from '../slack/complete-challenge.js';
+import * as appMention from './app-mention.js';
 
-const {  WORKOUTS_DB_TABLE } = process.env;
+const { utcToZonedTime } = dateFnsTz;
 
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
+const { WORKOUTS_DB_TABLE } = process.env;
+
+const dynamoDb = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 
 const handleEvent = async ({ type, user, channel, upload, files }) => {
   console.log('Executing inner event:', type);
@@ -34,7 +37,7 @@ const handleEvent = async ({ type, user, channel, upload, files }) => {
       },
       ReturnValues: 'UPDATED_NEW',
     };
-    const { Attributes } = await dynamoDb.update(params).promise();
+    const { Attributes } = await dynamoDb.send(new UpdateCommand(params));
     const blocks = [
       {
         type: 'section',
@@ -72,7 +75,7 @@ const handleEvent = async ({ type, user, channel, upload, files }) => {
   }
 };
 
-exports.handler = async (event) => {
+export const handler = async (event) => {
   console.log('incoming event', event);
   const data = JSON.parse(event.body);
   const { type } = data;

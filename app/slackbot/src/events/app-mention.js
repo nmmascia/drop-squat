@@ -1,4 +1,4 @@
-module.exports.getMessage = ({ user, channel }) => {
+export const getMessage = ({ user, channel }) => {
   const text = `Hello, <@${user}>! What would you like to do today?`;
   return {
     channel,

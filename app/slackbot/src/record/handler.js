@@ -1,20 +1,21 @@
-const AWS = require('aws-sdk');
-const { startOfISOWeek, format, subWeeks } = require('date-fns');
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import { DynamoDBDocumentClient, GetCommand } from '@aws-sdk/lib-dynamodb';
+import { startOfISOWeek, format, subWeeks } from 'date-fns';
 
 const { WORKOUTS_DB_TABLE } = process.env;
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
+const dynamoDb = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 
-module.exports.handler = async (event) => {
+export const handler = async (event) => {
   const { week } = event.queryStringParameters;
 
-  const { Item } = await dynamoDb
-    .get({
+  const { Item } = await dynamoDb.send(
+    new GetCommand({
       TableName: WORKOUTS_DB_TABLE,
       Key: {
         week,
       },
     })
-    .promise();
+  );
 
   const headers = ['handle', 'workouts'];
 

@@ -1,23 +1,24 @@
-const leaderboard = require('../slack/leaderboard');
-const chatPostAPI = require('../slack/chat-post');
-const AWS = require('aws-sdk');
-const { startOfISOWeek, format, subWeeks } = require('date-fns');
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import { DynamoDBDocumentClient, GetCommand } from '@aws-sdk/lib-dynamodb';
+import { startOfISOWeek, format, subWeeks } from 'date-fns';
+import * as leaderboard from '../slack/leaderboard.js';
+import chatPostAPI from '../slack/chat-post.js';
 
 const { WORKOUTS_DB_TABLE, CHANNEL_ID } = process.env;
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
+const dynamoDb = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 
-module.exports.handler = async () => {
+export const handler = async () => {
   const date = startOfISOWeek(subWeeks(new Date(), 1));
   const storageKey = format(date, 'MMddyyyy');
 
-  const { Item } = await dynamoDb
-    .get({
+  const { Item } = await dynamoDb.send(
+    new GetCommand({
       TableName: WORKOUTS_DB_TABLE,
       Key: {
         week: storageKey,
       },
     })
-    .promise();
+  );
 
   const sorted = Object.entries(Item)
     .reduce((acc, [key, count]) => {

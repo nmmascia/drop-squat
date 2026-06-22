@@ -1,15 +1,18 @@
-const querystring = require('querystring');
-const AWS = require('aws-sdk');
-const { startOfISOWeek, format } = require('date-fns');
-const chatUpdateAPI = require('../slack/chat-update');
-const leaderboard = require('../slack/leaderboard');
-const { utcToZonedTime } = require('date-fns-tz');
+import querystring from 'node:querystring';
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import { DynamoDBDocumentClient, GetCommand, UpdateCommand } from '@aws-sdk/lib-dynamodb';
+import { startOfISOWeek, format } from 'date-fns';
+import dateFnsTz from 'date-fns-tz';
+import chatUpdateAPI from '../slack/chat-update.js';
+import * as leaderboard from '../slack/leaderboard.js';
+
+const { utcToZonedTime } = dateFnsTz;
 
 const { WORKOUTS_DB_TABLE } = process.env;
 
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
+const dynamoDb = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 
-exports.handler = async (event) => {
+export const handler = async (event) => {
   const { payload } = querystring.parse(event.body);
   const data = JSON.parse(payload);
   const [action] = data.actions;
@@ -37,7 +40,7 @@ exports.handler = async (event) => {
         },
         ReturnValues: 'UPDATED_NEW',
       };
-      const { Attributes } = await dynamoDb.update(params).promise();
+      const { Attributes } = await dynamoDb.send(new UpdateCommand(params));
       const blocks = [
         {
           type: 'section',
@@ -58,14 +61,14 @@ exports.handler = async (event) => {
       break;
     }
     case 'GET_WEEKLY_LEADERBOARD': {
-      const { Item } = await dynamoDb
-        .get({
+      const { Item } = await dynamoDb.send(
+        new GetCommand({
           TableName: WORKOUTS_DB_TABLE,
           Key: {
             week: storageKey,
           },
         })
-        .promise();
+      );
 
       const sorted = Object.entries(Item)
         .reduce((acc, [key, count]) => {

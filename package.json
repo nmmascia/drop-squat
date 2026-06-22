@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "private": true,
+  "engines": {
+    "node": ">=22"
+  },
   "author": "Nick Mascia <nmmascia@gmail.com>",
   "license": "MIT",
   "scripts": {

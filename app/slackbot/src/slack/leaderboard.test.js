@@ -1,4 +1,4 @@
-const leaderboard = require('./leaderboard');
+import * as leaderboard from './leaderboard.js';
 
 test('should return the correct tally sections', () => {
   expect(leaderboard.countHeader()).toMatchSnapshot();

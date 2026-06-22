@@ -1,7 +1,6 @@
-const fetch = require('node-fetch');
 const { BOT_TOKEN } = process.env;
 
-module.exports = async function chatUpdate({ responseUrl, body }) {
+export default async function chatUpdate({ responseUrl, body }) {
   const result = await fetch(responseUrl, {
     method: 'POST',
     body: JSON.stringify({
@@ -17,4 +16,4 @@ module.exports = async function chatUpdate({ responseUrl, body }) {
 
   const json = await result.json();
   return json;
-};
+}

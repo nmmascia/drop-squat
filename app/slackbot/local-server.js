@@ -4,24 +4,24 @@
 //   pnpm run dev
 //
 // Routes mirror the `functions` block in serverless.yml.
-require('dotenv').config();
-const AWS = require('aws-sdk');
+import 'dotenv/config';
+import express from 'express';
 
-// Point the AWS SDK at DynamoDB Local BEFORE the handlers are required, since
-// each handler constructs its DocumentClient at module load from this config.
-AWS.config.update({
-  region: process.env.AWS_REGION || 'localhost',
-  endpoint: process.env.DYNAMODB_ENDPOINT || 'http://localhost:8000',
-  accessKeyId: 'local',
-  secretAccessKey: 'local',
-});
+// Point the AWS SDK at DynamoDB Local BEFORE the handlers are imported. The
+// handlers build their (zero-config) DynamoDB client at module load, and AWS
+// SDK v3 resolves region, credentials, and endpoint from these standard env
+// vars. ESM hoists static imports, so the handlers are pulled in via dynamic
+// import() below — after these are set.
+process.env.AWS_REGION = process.env.AWS_REGION || 'localhost';
+process.env.AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID || 'local';
+process.env.AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY || 'local';
+process.env.AWS_ENDPOINT_URL_DYNAMODB =
+  process.env.AWS_ENDPOINT_URL_DYNAMODB || process.env.DYNAMODB_ENDPOINT || 'http://localhost:8000';
 
-const express = require('express');
-
-const eventHandler = require('./src/events/handler').handler;
-const responseHandler = require('./src/response/handler').handler;
-const recordHandler = require('./src/record/handler').handler;
-const postUpdateHandler = require('./src/post-update/handler').handler;
+const { handler: eventHandler } = await import('./src/events/handler.js');
+const { handler: responseHandler } = await import('./src/response/handler.js');
+const { handler: recordHandler } = await import('./src/record/handler.js');
+const { handler: postUpdateHandler } = await import('./src/post-update/handler.js');
 
 const app = express();
 

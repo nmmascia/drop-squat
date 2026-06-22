@@ -1,7 +1,6 @@
-const fetch = require('node-fetch');
 const { BOT_TOKEN } = process.env;
 
-module.exports = async function chatPost({ message }) {
+export default async function chatPost({ message }) {
   const result = await fetch('https://slack.com/api/chat.postMessage', {
     method: 'POST',
     body: JSON.stringify(message),
@@ -14,4 +13,4 @@ module.exports = async function chatPost({ message }) {
 
   const json = await result.json();
   return json;
-};
+}

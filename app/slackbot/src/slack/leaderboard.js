@@ -1,6 +1,6 @@
-const { format } = require('date-fns');
+import { format } from 'date-fns';
 
-module.exports.boardHeader = (date) => ({
+export const boardHeader = (date) => ({
   type: 'section',
   text: {
     type: 'mrkdwn',
@@ -8,7 +8,7 @@ module.exports.boardHeader = (date) => ({
   },
 });
 
-module.exports.countHeader = () => ({
+export const countHeader = () => ({
   type: 'section',
   fields: [
     {
@@ -22,7 +22,7 @@ module.exports.countHeader = () => ({
   ],
 });
 
-module.exports.userCount = ({ userId, baotw, count }) => {
+export const userCount = ({ userId, baotw, count }) => {
   const slackUserRef = `<@${userId}>`;
   let emojis = '';
   if (count < 3) emojis += ':zombie:';
@@ -44,7 +44,7 @@ module.exports.userCount = ({ userId, baotw, count }) => {
   };
 };
 
-module.exports.topWorkouts = ({ topPeople }) => {
+export const topWorkouts = ({ topPeople }) => {
   return [
     {
       type: 'section',
@@ -77,7 +77,7 @@ module.exports.topWorkouts = ({ topPeople }) => {
   ];
 };
 
-module.exports.motivationalQuote = () => ({
+export const motivationalQuote = () => ({
   type: 'section',
   text: {
     type: 'mrkdwn',
